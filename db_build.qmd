@@ -1,0 +1,50 @@
+---
+title: "db_build"
+format: html
+editor: visual
+---
+
+## load packages
+```{r}
+#| output: false
+if (!require(librarian)){
+  install.packages("librarian")
+  library(librarian)
+}
+
+librarian::shelf(tidyverse, RPostgres, DBI, here)
+
+```
+
+```{r}
+#| output: false
+tryCatch({
+    drv <- dbDriver("Postgres")
+    print("Connecting to Database…")
+    connection <- dbConnect(drv,
+                 dbname = Sys.getenv("aws_dbname"),
+                 host = Sys.getenv("aws_host"),
+                 port = Sys.getenv("aws_port"),
+                 user = Sys.getenv("aws_user"),
+                 password = Sys.getenv("aws_password"),
+                 timezone=NULL)
+    print("Database Connected!")
+    },
+    error=function(cond) {
+            print("Unable to connect to Database.")
+    })
+
+# set schema path
+dbExecute(connection, "set search_path to 'bay_area'")
+```
+
+
+## Site table build
+```{r}
+
+# location
+dbExecute(connection, "alter table site add primary key(site_id);")
+
+
+```
+
