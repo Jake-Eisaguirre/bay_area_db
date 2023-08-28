@@ -50,7 +50,8 @@ clean_site <- Site_Info_piet5 %>%
          across(.cols = c("refuge_code":"second_contact"),
                 .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
          across(.cols = c("class":"origin"),
-                .fn = ~str_to_lower(str_replace_all(., " ", "_")))) %>% 
+                .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
+         piet_change = str_replace_all(piet_change, "[[:punct:]]", "")) %>% 
   select(!c(x1)) %>% 
   rename(site_id = site_code)
 

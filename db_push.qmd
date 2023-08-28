@@ -60,11 +60,7 @@ tryCatch({
 ## Push all clean tables to database
 ```{r}
 
-table_list <- list.files(here("clean_tables")) %>% 
-  str_remove(".csv")
   
-
-
 # remove current schema 
 dbExecute(conn = connection, "DROP SCHEMA bay_area CASCADE")
 
@@ -75,14 +71,29 @@ dbExecute(connection, "create schema bay_area")
 dbExecute(connection, "set search_path to bay_area")
 
 
-for (i in 1:length(table_list)) {
-  
-  obs <- table_list[i] %>% 
-    str_replace('"','\'')
-  
-  dbWriteTable(connection, obs, table_list[i], overwrite = T)
-  
-}
+# table_list <- list.files(here("clean_tables")) %>% 
+#   str_remove(".csv")
+# for (i in 1:length(table_list)) {
+#   
+#   obs <- table_list[i] 
+#   
+#   dbWriteTable(connection, 'amphib_dissect', amphib_dissect, overwrite = T)
+#   
+# }
+
+dbWriteTable(connection, 'amphib_dissect', amphib_dissect, overwrite = T)
+
+dbWriteTable(connection, 'amphib_parasite', amphib_parasite, overwrite = T)
+
+dbWriteTable(connection, 'bd_results', bd_results, overwrite = T)
+
+dbWriteTable(connection, 'site', site, overwrite = T)
+
+dbWriteTable(connection, 'water_quality_info', water_quality_info, overwrite = T)
+
+dbWriteTable(connection, 'wetland_info', wetland_info, overwrite = T)
+
+
 
 
 ```
