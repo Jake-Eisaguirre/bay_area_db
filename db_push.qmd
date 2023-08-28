@@ -1,0 +1,89 @@
+---
+title: "db_push"
+format: html
+editor: visual
+---
+
+## load packages
+```{r}
+#| output: false
+if (!require(librarian)){
+  install.packages("librarian")
+  library(librarian)
+}
+
+librarian::shelf(tidyverse, RPostgres, DBI, here, stringr)
+
+```
+
+## read in `clean_tables` files
+```{r}
+#| message: false
+
+files <- list.files(here("clean_tables"))
+
+for (i in 1:length(files)) {
+  
+  t <- read_csv(here("clean_tables", files[i])) %>% 
+         clean_names()
+  
+  z <- str_remove(files[i], ".csv")
+  
+  assign(z, t)
+  
+}
+
+rm(t, z)
+
+```
+
+## Connect to database
+```{r}
+#| output: false
+tryCatch({
+    drv <- dbDriver("Postgres")
+    print("Connecting to Database…")
+    connection <- dbConnect(drv,
+                 dbname = Sys.getenv("aws_dbname"),
+                 host = Sys.getenv("aws_host"),
+                 port = Sys.getenv("aws_port"),
+                 user = Sys.getenv("aws_user"),
+                 password = Sys.getenv("aws_password"),
+                 timezone=NULL)
+    print("Database Connected!")
+    },
+    error=function(cond) {
+            print("Unable to connect to Database.")
+    })
+
+```
+
+## Push all clean tables to database
+```{r}
+
+table_list <- list.files(here("clean_tables")) %>% 
+  str_remove(".csv")
+  
+
+
+# remove current schema 
+dbExecute(conn = connection, "DROP SCHEMA bay_area CASCADE")
+
+# create new empty schema
+dbExecute(connection, "create schema bay_area")
+
+# set schema path
+dbExecute(connection, "set search_path to bay_area")
+
+
+for (i in 1:length(table_list)) {
+  
+  obs <- get(table_list[i])
+  
+  dbWriteTable(connection, paste(obs), table_list[i], overwrite = T)
+  
+}
+
+
+```
+

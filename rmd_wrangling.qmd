@@ -18,6 +18,7 @@ librarian::shelf(tidyverse, RPostgres, DBI, here, lubridate, stringr, janitor, p
 ```
 
 ## read in raw data
+
 ```{r}
 #| message: false
 
@@ -38,6 +39,7 @@ rm(t, z)
 ```
 
 ## clean site table
+
 ```{r}
 
 clean_site <- Site_Info_piet5 %>% 
@@ -52,10 +54,11 @@ clean_site <- Site_Info_piet5 %>%
   select(!c(x1)) %>% 
   rename(site_id = site_code)
 
-
+write_csv(clean_site, here("clean_tables", "site.csv"))
 ```
 
 ## wetland info
+
 ```{r}
 
 clean_wetland_info <- Wetland_Info_piet9 %>% 
@@ -68,9 +71,11 @@ clean_wetland_info <- Wetland_Info_piet9 %>%
   rename(site_id = site_code,
          survey_id = assmt_code)
 
+write_csv(clean_wetland_info, here("clean_tables", "wetland_info.csv"))
 ```
 
 ## water_quality info
+
 ```{r}
 
 clean_water_quality_info <- Water_Quality_piet3 %>% 
@@ -81,10 +86,11 @@ clean_water_quality_info <- Water_Quality_piet3 %>%
   rename(site_id = site_code,
          water_id = assmt_code)
 
-
+write_csv(clean_water_quality_info, here("clean_tables", "water_quality_info.csv"))
 ```
 
 ## amphib_dissect
+
 ```{r}
 
 clean_amphib_dissect <- Amphib_Dissect_piet10 %>% 
@@ -93,9 +99,11 @@ clean_amphib_dissect <- Amphib_Dissect_piet10 %>%
          bd_id = bdid) %>% 
   select(!c(x1, site_code, sitecode))
 
+write_csv(clean_amphib_dissect, here("clean_tables", "amphib_dissect.csv"))
 ```
 
 ## amphib_parasite
+
 ```{r}
 
 clean_amphib_parasite <- Amphib_Parasite_piet17 %>% 
@@ -103,10 +111,11 @@ clean_amphib_parasite <- Amphib_Parasite_piet17 %>%
   rename(dissect_id = dissect_code) %>% 
   mutate(parasite_id = UUIDgenerate(output = c("uuid"), n = n()))
   
-
+write_csv(clean_amphib_parasite, here("clean_tables", "amphib_parasite.csv"))
 ```
 
 ## Bd table
+
 ```{r}
 
 clean_bd <- Bd2020_2021v1 %>% 
@@ -114,5 +123,5 @@ clean_bd <- Bd2020_2021v1 %>%
             date, species, life_stage, site, index_bd)) %>% 
   rename(bd_id = briggs_lab_swab_id)
 
+write_csv(clean_bd, here("clean_tables", "bd_results.csv"))
 ```
-
