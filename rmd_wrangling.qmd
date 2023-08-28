@@ -16,3 +16,17 @@ if (!require(librarian)){
 librarian::shelf(tidyverse, RPostgres, DBI, here, lubridate, stringr)
 
 ```
+
+## read in raw data
+```{r}
+files <- list.files(here("raw_data"))
+
+for (i in 1:length(files)) {
+  
+  assign(files[i], read_csv(here("raw_data", files[i])))
+  
+}
+
+
+```
+
