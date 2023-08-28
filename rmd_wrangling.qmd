@@ -13,7 +13,7 @@ if (!require(librarian)){
   library(librarian)
 }
 
-librarian::shelf(tidyverse, RPostgres, DBI, here, lubridate, stringr, janitor, parsedate)
+librarian::shelf(tidyverse, RPostgres, DBI, here, lubridate, stringr, janitor, parsedate, uuid)
 
 ```
 
@@ -40,7 +40,7 @@ rm(t, z)
 ## clean site table
 ```{r}
 
-clean_site_table <- Site_Info_piet5 %>% 
+clean_site <- Site_Info_piet5 %>% 
   mutate(across(.cols = c("site_name","property_name"), 
                 .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
          property_area_m2 = as.numeric(if_else(property_area_m2 == "#N/A", NA, property_area_m2)),
@@ -49,7 +49,8 @@ clean_site_table <- Site_Info_piet5 %>%
                 .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
          across(.cols = c("class":"origin"),
                 .fn = ~str_to_lower(str_replace_all(., " ", "_")))) %>% 
-  select(!c(x1))
+  select(!c(x1)) %>% 
+  rename(site_id = site_code)
 
 
 ```
@@ -62,7 +63,56 @@ clean_wetland_info <- Wetland_Info_piet9 %>%
                 .fn = ~str_to_lower(str_replace_all(., " ", "_")))) %>% 
   select(!c(date, site_year)) %>% 
   unite(date, c("year", "month", "day"), sep = "-", na.rm = T) %>% 
-  mutate(date = parse_date(date))
+  mutate(date = parse_date(date),
+         water_id = assmt_code)%>% 
+  rename(site_id = site_code,
+         survey_id = assmt_code)
+
+```
+
+## water_quality info
+```{r}
+
+clean_water_quality_info <- Water_Quality_piet3 %>% 
+  select(!c(x1, site_year)) %>% 
+  unite(date, c("year", "month", "day"), sep = "-", na.rm = T) %>% 
+  mutate(date = parse_date(date)) %>% 
+  mutate(water_color = str_to_lower(water_color))%>% 
+  rename(site_id = site_code,
+         water_id = assmt_code)
+
+
+```
+
+## amphib_dissect
+```{r}
+
+clean_amphib_dissect <- Amphib_Dissect_piet10 %>% 
+  rename(survey_id = collect_code,
+         dissect_id = dissect_code,
+         bd_id = bdid) %>% 
+  select(!c(x1, site_code, sitecode))
+
+```
+
+## amphib_parasite
+```{r}
+
+clean_amphib_parasite <- Amphib_Parasite_piet17 %>% 
+  select(!c(x1)) %>% 
+  rename(dissect_id = dissect_code) %>% 
+  mutate(parasite_id = UUIDgenerate(output = c("uuid"), n = n()))
+  
+
+```
+
+## Bd table
+```{r}
+
+clean_bd <- Bd2020_2021v1 %>% 
+  select(!c(x, dissection_code, collect_code, index_collect, index_dissect,
+            date, species, life_stage, site, index_bd)) %>% 
+  rename(bd_id = briggs_lab_swab_id)
 
 ```
 
