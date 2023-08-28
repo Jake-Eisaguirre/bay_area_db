@@ -13,19 +13,43 @@ if (!require(librarian)){
   library(librarian)
 }
 
-librarian::shelf(tidyverse, RPostgres, DBI, here, lubridate, stringr)
+librarian::shelf(tidyverse, RPostgres, DBI, here, lubridate, stringr, janitor)
 
 ```
 
 ## read in raw data
 ```{r}
+#| message: false
+
 files <- list.files(here("raw_data"))
 
 for (i in 1:length(files)) {
   
-  assign(files[i], read_csv(here("raw_data", files[i])))
+  t <- read_csv(here("raw_data", files[i])) %>% 
+         clean_names()
+  
+  z <- str_remove(files[i], ".csv")
+  
+  assign(z, t)
   
 }
+
+rm(t, z)
+```
+
+## clean site table
+```{r}
+
+clean_site_table <- Site_Info_piet5 %>% 
+  mutate(across(.cols = c("site_name","property_name"), 
+                .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
+         property_area_m2 = as.numeric(if_else(property_area_m2 == "#N/A", NA, property_area_m2)),
+         meta_comm_1 = str_to_lower(str_replace_all(meta_comm_1, " ", "_")),
+         across(.cols = c("refuge_code":"second_contact"),
+                .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
+         across(.cols = c("class":"origin"),
+                .fn = ~str_to_lower(str_replace_all(., " ", "_"))))
+  
 
 
 ```
