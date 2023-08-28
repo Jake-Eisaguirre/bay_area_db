@@ -13,7 +13,7 @@ if (!require(librarian)){
   library(librarian)
 }
 
-librarian::shelf(tidyverse, RPostgres, DBI, here, lubridate, stringr, janitor)
+librarian::shelf(tidyverse, RPostgres, DBI, here, lubridate, stringr, janitor, parsedate)
 
 ```
 
@@ -48,9 +48,21 @@ clean_site_table <- Site_Info_piet5 %>%
          across(.cols = c("refuge_code":"second_contact"),
                 .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
          across(.cols = c("class":"origin"),
-                .fn = ~str_to_lower(str_replace_all(., " ", "_"))))
-  
+                .fn = ~str_to_lower(str_replace_all(., " ", "_")))) %>% 
+  select(!c(x1))
 
+
+```
+
+## wetland info
+```{r}
+
+clean_wetland_info <- Wetland_Info_piet9 %>% 
+  mutate(across(.col = c("trophic_state", "land_usage", "tree_method", "m_or_f"),
+                .fn = ~str_to_lower(str_replace_all(., " ", "_")))) %>% 
+  select(!c(date, site_year)) %>% 
+  unite(date, c("year", "month", "day"), sep = "-", na.rm = T) %>% 
+  mutate(date = parse_date(date))
 
 ```
 
