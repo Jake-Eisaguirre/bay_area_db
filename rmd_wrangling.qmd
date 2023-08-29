@@ -109,6 +109,13 @@ clean_water_quality_info <- Water_Quality_piet3 %>%
   rename(site_id = site_code,
          water_id = assmt_code)
 
+# Missing water_ids in water_table
+missing_water_ids <- clean_wetland_info %>% 
+  filter(!water_id %in% clean_water_quality_info$water_id)
+
+
+
+
 write_csv(clean_water_quality_info, here("clean_tables", "water_quality_info.csv"))
 ```
 
@@ -121,6 +128,10 @@ clean_amphib_dissect <- Amphib_Dissect_piet10 %>%
          dissect_id = dissect_code,
          bd_id = bdid) %>% 
   select(!c(x1, site_code, sitecode))
+
+#missing wetland IDS in amphib dissect
+mis_id <- clean_amphib_dissect %>% 
+  filter(!survey_id %in% c(wetland_info$survey_id))
 
 write_csv(clean_amphib_dissect, here("clean_tables", "amphib_dissect.csv"))
 ```
