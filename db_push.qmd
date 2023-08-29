@@ -5,6 +5,7 @@ editor: visual
 ---
 
 ## load packages
+
 ```{r}
 #| output: false
 if (!require(librarian)){
@@ -17,6 +18,7 @@ librarian::shelf(tidyverse, RPostgres, DBI, here, stringr)
 ```
 
 ## read in `clean_tables` files
+
 ```{r}
 #| message: false
 
@@ -37,6 +39,7 @@ rm(t, z)
 ```
 
 ## Connect to database
+
 ```{r}
 #| output: false
 tryCatch({
@@ -58,6 +61,7 @@ tryCatch({
 ```
 
 ## Push all clean tables to database
+
 ```{r}
 
   
@@ -97,4 +101,3 @@ dbWriteTable(connection, 'wetland_info', wetland_info, overwrite = T)
 
 
 ```
-

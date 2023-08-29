@@ -53,7 +53,10 @@ clean_site <- Site_Info_piet5 %>%
                 .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
          piet_change = str_replace_all(piet_change, "[[:punct:]]", "")) %>% 
   select(!c(x1)) %>% 
-  rename(site_id = site_code)
+  rename(site_id = site_code) %>% 
+  filter(!site_id == "0") # remove repeat site ID for now but fix later on.
+
+
 
 write_csv(clean_site, here("clean_tables", "site.csv"))
 ```
@@ -70,7 +73,26 @@ clean_wetland_info <- Wetland_Info_piet9 %>%
   mutate(date = parse_date(date),
          water_id = assmt_code)%>% 
   rename(site_id = site_code,
-         survey_id = assmt_code)
+         survey_id = assmt_code) %>% 
+  group_by(survey_id) %>% # remove duplicate survey IDs for nnow
+  mutate(temp_id = cur_group_id()) %>% 
+  filter(!duplicated(temp_id)) %>%
+  select(!c(temp_id)) 
+
+# DUPLICATE SURVEY IDS - Remove for now
+dup_surv <- clean_wetland_info %>% 
+  group_by(survey_id) %>% 
+  mutate(temp_id = cur_group_id()) %>% 
+  filter(duplicated(temp_id)) %>% 
+  select(survey_id)
+
+# Site_IDs present in wetland table but missing in the Site table
+missing_sites <- clean_wetland_info %>% 
+  filter(!site_id %in% clean_site$site_id)
+  
+
+clean_wetland_info <- clean_wetland_info %>% 
+  filter(!site_id %in% c(missing_sites$site_id)) # remove site_ids that are in the wetland table but not in the site table
 
 write_csv(clean_wetland_info, here("clean_tables", "wetland_info.csv"))
 ```

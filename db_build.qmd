@@ -5,6 +5,7 @@ editor: visual
 ---
 
 ## load packages
+
 ```{r}
 #| output: false
 if (!require(librarian)){
@@ -38,13 +39,30 @@ tryCatch({
 dbExecute(connection, "set search_path to 'bay_area'")
 ```
 
-
 ## Site table build
+
 ```{r}
 
 # location
 dbExecute(connection, "alter table site add primary key(site_id);")
 
+# wetland info
+dbExecute(connection, "alter table wetland_info add primary key(survey_id);")
+
+dbExecute(connection,
+          "alter table wetland_info  
+           add constraint fk_wetland foreign key (site_id) 
+          references site (site_id);")
+
+# water info
+dbExecute(connection, "alter table water_quality_info add primary key(water_id);")
+
+dbExecute(connection,
+          "alter table water_quality_info  
+           add constraint fk_water foreign key (water_id) 
+          references wetland_info (water_id);")
+
+
+
 
 ```
-
