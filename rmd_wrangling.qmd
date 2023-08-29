@@ -51,7 +51,8 @@ clean_site <- Site_Info_piet5 %>%
                 .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
          across(.cols = c("class":"origin"),
                 .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
-         piet_change = str_replace_all(piet_change, "[[:punct:]]", "")) %>% 
+         piet_change = str_replace_all(piet_change, "[[:punct:]]", ""),
+         across(where(is.character), tolower)) %>% 
   select(!c(x1)) %>% 
   rename(site_id = site_code) %>% 
   filter(!site_id == "0") # remove repeat site ID for now but fix later on.
@@ -67,7 +68,8 @@ write_csv(clean_site, here("clean_tables", "site.csv"))
 
 clean_wetland_info <- Wetland_Info_piet9 %>% 
   mutate(across(.col = c("trophic_state", "land_usage", "tree_method", "m_or_f"),
-                .fn = ~str_to_lower(str_replace_all(., " ", "_")))) %>% 
+                .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
+         across(where(is.character), tolower)) %>% 
   select(!c(date, site_year)) %>% 
   unite(date, c("year", "month", "day"), sep = "-", na.rm = T) %>% 
   mutate(date = parse_date(date),
@@ -94,6 +96,9 @@ missing_sites <- clean_wetland_info %>%
 clean_wetland_info <- clean_wetland_info %>% 
   filter(!site_id %in% c(missing_sites$site_id)) # remove site_ids that are in the wetland table but not in the site table
 
+# missing survey_ids present in dissect but missing in wetland
+missing_survey_id <- cle
+
 write_csv(clean_wetland_info, here("clean_tables", "wetland_info.csv"))
 ```
 
@@ -105,7 +110,8 @@ clean_water_quality_info <- Water_Quality_piet3 %>%
   select(!c(x1, site_year)) %>% 
   unite(date, c("year", "month", "day"), sep = "-", na.rm = T) %>% 
   mutate(date = parse_date(date)) %>% 
-  mutate(water_color = str_to_lower(water_color))%>% 
+  mutate(water_color = str_to_lower(water_color),
+         across(where(is.character), tolower))%>% 
   rename(site_id = site_code,
          water_id = assmt_code)
 
@@ -127,9 +133,10 @@ clean_amphib_dissect <- Amphib_Dissect_piet10 %>%
   rename(survey_id = collect_code,
          dissect_id = dissect_code,
          bd_id = bdid) %>% 
-  select(!c(x1, site_code, sitecode))
+  select(!c(x1, site_code, sitecode)) %>% 
+  mutate(across(where(is.character), tolower))
 
-#missing wetland IDS in amphib dissect
+#missing survey_ids in amphib dissect table not found in wetland table
 mis_id <- clean_amphib_dissect %>% 
   filter(!survey_id %in% c(wetland_info$survey_id))
 
@@ -143,7 +150,8 @@ write_csv(clean_amphib_dissect, here("clean_tables", "amphib_dissect.csv"))
 clean_amphib_parasite <- Amphib_Parasite_piet17 %>% 
   select(!c(x1)) %>% 
   rename(dissect_id = dissect_code) %>% 
-  mutate(parasite_id = UUIDgenerate(output = c("uuid"), n = n()))
+  mutate(parasite_id = UUIDgenerate(output = c("uuid"), n = n()),
+         across(where(is.character), tolower))
   
 write_csv(clean_amphib_parasite, here("clean_tables", "amphib_parasite.csv"))
 ```
@@ -155,7 +163,8 @@ write_csv(clean_amphib_parasite, here("clean_tables", "amphib_parasite.csv"))
 clean_bd <- Bd2020_2021v1 %>% 
   select(!c(x, dissection_code, collect_code, index_collect, index_dissect,
             date, species, life_stage, site, index_bd)) %>% 
-  rename(bd_id = briggs_lab_swab_id)
+  rename(bd_id = briggs_lab_swab_id) %>% 
+  mutate(across(where(is.character), tolower))
 
 write_csv(clean_bd, here("clean_tables", "bd_results.csv"))
 ```

@@ -54,13 +54,30 @@ dbExecute(connection,
            add constraint fk_wetland foreign key (site_id) 
           references site (site_id);")
 
-# water info
+# water info - still needs work
 dbExecute(connection, "alter table water_quality_info add primary key(water_id);")
 
 dbExecute(connection,
-          "alter table water_quality_info  
-           add constraint fk_water foreign key (water_id) 
-          references wetland_info (water_id);")
+          "alter table wetland_info  
+           add constraint fk_water foreign key (site_id) 
+          references water_quality_info (site_id);")
+
+# amphib dissect
+dbExecute(connection, "alter table amphib_dissect add primary key(dissect_id);")
+
+dbExecute(connection,
+          "alter table amphib_dissect  
+           add constraint fk_amphib_dissect foreign key (survey_id) 
+          references wetland_info (survey_id);")
+
+# amphib parasite
+dbExecute(connection, "alter table amphib_parasite add primary key(parasite_id);")
+
+dbExecute(connection,
+          "alter table amphib_parasite  
+           add constraint fk_amphib_parasite foreign key (dissect_id) 
+          references amphib_dissect (dissect_id);")
+
 
 
 
