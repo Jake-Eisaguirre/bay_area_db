@@ -81,23 +81,17 @@ clean_wetland_info <- Wetland_Info_piet9 %>%
   filter(!duplicated(temp_id)) %>%
   select(!c(temp_id)) 
 
-# DUPLICATE SURVEY IDS - Remove for now
-dup_surv <- clean_wetland_info %>% 
-  group_by(survey_id) %>% 
-  mutate(temp_id = cur_group_id()) %>% 
-  filter(duplicated(temp_id)) %>% 
-  select(survey_id)
 
 # Site_IDs present in wetland table but missing in the Site table
 missing_sites <- clean_wetland_info %>% 
   filter(!site_id %in% clean_site$site_id)
   
+write_csv(missing_sites, here("orphan_ids", "orphan_wetlandtable_siteIDS.csv"))
 
 clean_wetland_info <- clean_wetland_info %>% 
   filter(!site_id %in% c(missing_sites$site_id)) # remove site_ids that are in the wetland table but not in the site table
 
-# missing survey_ids present in dissect but missing in wetland
-missing_survey_id <- cle
+
 
 write_csv(clean_wetland_info, here("clean_tables", "wetland_info.csv"))
 ```
@@ -116,9 +110,14 @@ clean_water_quality_info <- Water_Quality_piet3 %>%
          water_id = assmt_code)
 
 # Missing water_ids in water_table
-missing_water_ids <- clean_wetland_info %>% 
-  filter(!water_id %in% clean_water_quality_info$water_id)
+missing_water_ids <- clean_water_quality_info %>% 
+  filter(!water_id %in% clean_wetland_info$water_id)
 
+write_csv(missing_water_ids, here("orphan_ids", "orphan_watertable_waterIDS.csv"))
+
+# remove ophan ids
+clean_water_quality_info <- clean_water_quality_info %>% 
+  filter(!water_id %in% c(missing_water_ids$water_id))
 
 
 
@@ -138,7 +137,13 @@ clean_amphib_dissect <- Amphib_Dissect_piet10 %>%
 
 #missing survey_ids in amphib dissect table not found in wetland table
 mis_id <- clean_amphib_dissect %>% 
-  filter(!survey_id %in% c(wetland_info$survey_id))
+  filter(!survey_id %in% c(clean_wetland_info$survey_id))
+
+write_csv(mis_id, here("orphan_ids", "orphan_AmphibDissect_surveyIDS.csv"))
+
+#remove missing ids
+clean_amphib_dissect <- clean_amphib_dissect %>% 
+  filter(!survey_id %in% c(mis_id$survey_id))
 
 write_csv(clean_amphib_dissect, here("clean_tables", "amphib_dissect.csv"))
 ```
