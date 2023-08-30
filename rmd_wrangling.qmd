@@ -157,6 +157,16 @@ clean_amphib_parasite <- Amphib_Parasite_piet17 %>%
   rename(dissect_id = dissect_code) %>% 
   mutate(parasite_id = UUIDgenerate(output = c("uuid"), n = n()),
          across(where(is.character), tolower))
+
+# missing dissect IDs
+mis_dis_id <- clean_amphib_parasite %>% 
+  filter(!dissect_id %in% c(clean_amphib_dissect$dissect_id))
+
+write_csv(mis_dis_id, here("orphan_ids", "orphan_ParasiteDissect_dissectIDS.csv"))
+
+# remove missing IDs for now
+clean_amphib_parasite <- clean_amphib_parasite %>% 
+  filter(!dissect_id %in% c(mis_dis_id$dissect_id))
   
 write_csv(clean_amphib_parasite, here("clean_tables", "amphib_parasite.csv"))
 ```
@@ -170,6 +180,16 @@ clean_bd <- Bd2020_2021v1 %>%
             date, species, life_stage, site, index_bd)) %>% 
   rename(bd_id = briggs_lab_swab_id) %>% 
   mutate(across(where(is.character), tolower))
+
+# Missing Bd IDs
+mis_bd_ids <- clean_bd %>% 
+  filter(!bd_id %in% c(clean_amphib_dissect$bd_id))
+
+write_csv(mis_dis_id, here("orphan_ids", "orphan_Bd2020_2021v1_bdIDS.csv"))
+
+#remove missing IDs, most likely will be fixed with new data added?
+clean_bd <- clean_bd %>% 
+  filter(!bd_id %in% c(mis_bd_ids$bd_id))
 
 write_csv(clean_bd, here("clean_tables", "bd_results.csv"))
 ```
