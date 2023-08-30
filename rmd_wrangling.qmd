@@ -119,6 +119,10 @@ write_csv(missing_water_ids, here("orphan_ids", "orphan_watertable_waterIDS.csv"
 clean_water_quality_info <- clean_water_quality_info %>% 
   filter(!water_id %in% c(missing_water_ids$water_id))
 
+# # missing water_ids in Wetland Table
+# missing_wat_ids_wetland <- clean_water_quality_info %>% 
+#   filter(!water_id %in% clean_wetland_info$water_id)
+
 
 
 write_csv(clean_water_quality_info, here("clean_tables", "water_quality_info.csv"))
@@ -193,3 +197,50 @@ clean_bd <- clean_bd %>%
 
 write_csv(clean_bd, here("clean_tables", "bd_results.csv"))
 ```
+
+## snail dissection
+```{r}
+
+clean_snail_dissect <- Snail_Dissect_TMG_piet10 %>% 
+  mutate(across(where(is.character), tolower))
+  
+
+```
+
+## VES survey
+```{r}
+
+clean_ves_surv_table <- ves_table %>% 
+  mutate(across(where(is.character), tolower))%>% 
+  unite(date, c("year", "month", "day"), sep = "-", na.rm = T) %>% 
+  mutate(date = parse_date(date)) %>% 
+  select(!c(site_year)) %>% 
+  mutate(water_id = assmt_code) %>% 
+  rename(survey_id = assmt_code)
+
+```
+
+## VES SPP
+```{r}
+
+spp_code <- ves_spp_code %>% 
+  mutate(across(where(is.character), tolower))
+
+```
+
+## Ves 
+```{r}
+
+ves_table <- SURVEY_SPP_semiclean_TSM_v2 %>% 
+  mutate(across(where(is.character), tolower))
+
+```
+
+## netting info
+```{r}
+
+clean_net <- NETTING_INFO_semiclean_TSM_v2 %>% 
+  mutate(across(where(is.character), tolower))
+
+```
+
