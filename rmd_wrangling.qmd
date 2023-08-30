@@ -202,7 +202,8 @@ write_csv(clean_bd, here("clean_tables", "bd_results.csv"))
 ```{r}
 
 clean_snail_dissect <- Snail_Dissect_TMG_piet10 %>% 
-  mutate(across(where(is.character), tolower))
+  mutate(across(where(is.character), ~ str_replace_all(.,"[[:punct:]]", "")),
+         across(where(is.character), tolower))
   
 
 ```
@@ -240,7 +241,8 @@ ves_table <- SURVEY_SPP_semiclean_TSM_v2 %>%
 ```{r}
 
 clean_net <- NETTING_INFO_semiclean_TSM_v2 %>% 
-  mutate(across(where(is.character), tolower))
+  mutate(across(where(is.character), ~ str_replace_all(.,"[[:punct:]]", "")),
+         across(where(is.character), tolower))
 
 ```
 
