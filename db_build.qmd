@@ -59,8 +59,8 @@ dbExecute(connection, "alter table water_quality_info add primary key(water_id);
 
 dbExecute(connection,
           "alter table wetland_info  
-           add constraint fk_water foreign key (site_id) 
-          references water_quality_info (site_id);")
+           add constraint fk_water foreign key (water_id) 
+          references water_quality_info (water_id);")
 
 # amphib dissect
 dbExecute(connection, "alter table amphib_dissect add primary key(dissect_id);")
