@@ -205,8 +205,22 @@ write_csv(clean_bd, here("clean_tables", "bd_results.csv"))
 ```{r}
 
 clean_net_survey <- NETTING_INFO_semiclean_TSM_v2 %>% 
-  mutate(across(where(is.character), ~ str_replace_all(.,"[[:punct:]]", "")),
-         across(where(is.character), tolower))
+  mutate(across(c("corrections":"general_comments"), ~ str_replace_all(.,"[[:punct:]]", "")),
+         across(where(is.character), tolower)) %>% 
+  rename(site_id = site_code,
+         survey_id = assmt_code,
+         seine_id = seine_code) %>% 
+  select(!c(survey_code, year, date))
+
+# missing site_ids in the net survey info
+missing_siteid_netsurv <- clean_net_survey %>% 
+  filter(!site_id %in% c(clean_site$site_id))
+
+#remove missing site_ids
+clean_net_survey <- clean_net_survey %>% 
+  filter(!site_id %in% c(missing_siteid_netsurv$site_id))
+
+write_csv(clean_net_survey, here("clean_tables", "net_info.csv"))
 
 ```
 
@@ -215,7 +229,17 @@ clean_net_survey <- NETTING_INFO_semiclean_TSM_v2 %>%
 ```{r}
 
 net_species_table <- SURVEY_SPP_semiclean_TSM_v2 %>% 
-  mutate(across(where(is.character), tolower))
+  mutate(across(where(is.character), tolower)) %>% 
+  rename(survey_id = assmt_code,
+         seine_id = seine_code) %>% 
+  select(!c(site_code, survey_code, year, date))
+
+#missing survey_ids in clean_net_survey - seems to be no missing survey_ids or sein_ids
+missing_survid_netsur <- net_species_table %>% 
+  filter(!seine_id %in% c(net_species_table$seine_id))
+
+
+write_csv(net_species_table, here("clean_tables", "net_species.csv"))
 
 ```
 
@@ -225,7 +249,7 @@ net_species_table <- SURVEY_SPP_semiclean_TSM_v2 %>%
 ```{r}
 
 clean_snail_dissect <- Snail_Dissect_TMG_piet10 %>% 
-  mutate(across(where(is.character), ~ str_replace_all(.,"[[:punct:]]", "")),
+  mutate(across(c("notes", "piet_notes", "notes_old"), ~ str_replace_all(.,"[[:punct:]]", "")),
          across(where(is.character), tolower))
   
 
