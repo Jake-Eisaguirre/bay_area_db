@@ -1,7 +1,7 @@
 ---
 title: "rmd_wrangling"
 format: html
-editor: visual
+editor: source
 ---
 
 ## Load Packages
@@ -105,7 +105,7 @@ clean_water_quality_info <- Water_Quality_piet3 %>%
   unite(date, c("year", "month", "day"), sep = "-", na.rm = T) %>% 
   mutate(date = parse_date(date)) %>% 
   mutate(water_color = str_to_lower(water_color),
-         across(where(is.character), tolower))%>% 
+         across(where(is.character), tolower)) %>% 
   rename(site_id = site_code,
          water_id = assmt_code)
 
@@ -198,7 +198,30 @@ clean_bd <- clean_bd %>%
 write_csv(clean_bd, here("clean_tables", "bd_results.csv"))
 ```
 
+
+
+## netting info
+
+```{r}
+
+clean_net_survey <- NETTING_INFO_semiclean_TSM_v2 %>% 
+  mutate(across(where(is.character), ~ str_replace_all(.,"[[:punct:]]", "")),
+         across(where(is.character), tolower))
+
+```
+
+## Ves
+
+```{r}
+
+net_species_table <- SURVEY_SPP_semiclean_TSM_v2 %>% 
+  mutate(across(where(is.character), tolower))
+
+```
+
+
 ## snail dissection
+
 ```{r}
 
 clean_snail_dissect <- Snail_Dissect_TMG_piet10 %>% 
@@ -209,19 +232,21 @@ clean_snail_dissect <- Snail_Dissect_TMG_piet10 %>%
 ```
 
 ## VES survey
+
 ```{r}
 
-clean_ves_surv_table <- ves_table %>% 
+meta_net_surv_table <- ves_table %>% 
   mutate(across(where(is.character), tolower))%>% 
-  unite(date, c("year", "month", "day"), sep = "-", na.rm = T) %>% 
+  #unite(date, c("year", "month", "day"), sep = "-", na.rm = T) %>% 
   mutate(date = parse_date(date)) %>% 
-  select(!c(site_year)) %>% 
+  select(!c(year)) %>% 
   mutate(water_id = assmt_code) %>% 
   rename(survey_id = assmt_code)
 
 ```
 
 ## VES SPP
+
 ```{r}
 
 spp_code <- ves_spp_code %>% 
@@ -229,20 +254,5 @@ spp_code <- ves_spp_code %>%
 
 ```
 
-## Ves 
-```{r}
 
-ves_table <- SURVEY_SPP_semiclean_TSM_v2 %>% 
-  mutate(across(where(is.character), tolower))
-
-```
-
-## netting info
-```{r}
-
-clean_net <- NETTING_INFO_semiclean_TSM_v2 %>% 
-  mutate(across(where(is.character), ~ str_replace_all(.,"[[:punct:]]", "")),
-         across(where(is.character), tolower))
-
-```
 
