@@ -1,7 +1,7 @@
 ---
 title: "db_build"
 format: html
-editor: visual
+editor: source
 ---
 
 ## load packages
@@ -39,7 +39,7 @@ tryCatch({
 dbExecute(connection, "set search_path to 'bay_area'")
 ```
 
-## Site table build
+## build
 
 ```{r}
 
@@ -58,9 +58,9 @@ dbExecute(connection,
 dbExecute(connection, "alter table water_quality_info add primary key(water_id);")
 
 dbExecute(connection,
-          "alter table water_quality_info  
+          "alter table wetland_info  
            add constraint fk_water foreign key (water_id) 
-          references  wetland_info (water_id);")
+          references  water_quality_info (water_id);")
 
 # amphib dissect
 dbExecute(connection, "alter table amphib_dissect add primary key(dissect_id);")
@@ -78,14 +78,34 @@ dbExecute(connection,
            add constraint fk_amphib_parasite foreign key (dissect_id) 
           references amphib_dissect (dissect_id);")
 
-# Bd 
-dbExecute(connection, "alter table amphib_dissect add primary key(bd_id);")
+# Bd - Not working
+dbExecute(connection, "alter table bd_results add primary key(bd_id);")
 
 dbExecute(connection,
-          "alter table bd_results  
+          "alter table amphib_dissect  
            add constraint fk_bd foreign key (bd_id) 
-          references amphib_dissect (bd_id);")
+          references bd_results (bd_id);")
 
 
+# net_info
+dbExecute(connection, "alter table net_info add primary key(seine_id);")
+
+dbExecute(connection,
+          "alter table net_info
+          add constraint fk_net_info foreign key (site_id)
+          references site (site_id)")
+
+dbExecute(connection, # not working
+          "alter table net_info 
+          add constraint fk_wet_net_info foreign key (survey_id)
+          references wetland_info (survey_id);")
+
+# net species_info
+dbExecute(connection, "alter table net_species add primary key(net_species_id);")
+
+dbExecute(connection,
+          "alter table net_species
+          add constraint fk_net_species foreign key (seine_id)
+          references net_info (seine_id);")
 
 ```

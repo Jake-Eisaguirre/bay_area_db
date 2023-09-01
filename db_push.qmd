@@ -1,7 +1,7 @@
 ---
 title: "db_push"
 format: html
-editor: visual
+editor: source
 ---
 
 ## load packages
@@ -97,7 +97,9 @@ dbWriteTable(connection, 'water_quality_info', water_quality_info, overwrite = T
 
 dbWriteTable(connection, 'wetland_info', wetland_info, overwrite = T)
 
+dbWriteTable(connection, 'net_info', net_info, overwrite = T)
 
+dbWriteTable(connection, 'net_species', net_species, overwrite = T)
 
 
 ```

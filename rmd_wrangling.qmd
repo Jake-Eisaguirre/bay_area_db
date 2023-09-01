@@ -113,6 +113,10 @@ clean_water_quality_info <- Water_Quality_piet3 %>%
 missing_water_ids <- clean_water_quality_info %>% 
   filter(!water_id %in% clean_wetland_info$water_id)
 
+# missing water_ids in wetland table
+missing_wat_ids_wet <- clean_wetland_info %>% 
+  filter(!water_id %in% clean_water_quality_info$water_id)
+
 write_csv(missing_water_ids, here("orphan_ids", "orphan_watertable_waterIDS.csv"))
 
 # remove ophan ids
@@ -216,9 +220,14 @@ clean_net_survey <- NETTING_INFO_semiclean_TSM_v2 %>%
 missing_siteid_netsurv <- clean_net_survey %>% 
   filter(!site_id %in% c(clean_site$site_id))
 
+#duplicated seine_id - P.key
+dup_seine_id <- clean_net_survey %>% 
+  filter(duplicated(seine_id))
+
 #remove missing site_ids
 clean_net_survey <- clean_net_survey %>% 
-  filter(!site_id %in% c(missing_siteid_netsurv$site_id))
+  filter(!site_id %in% c(missing_siteid_netsurv$site_id),
+         !seine_id %in% c(dup_seine_id$seine_id))
 
 write_csv(clean_net_survey, here("clean_tables", "net_info.csv"))
 
@@ -229,14 +238,18 @@ write_csv(clean_net_survey, here("clean_tables", "net_info.csv"))
 ```{r}
 
 net_species_table <- SURVEY_SPP_semiclean_TSM_v2 %>% 
-  mutate(across(where(is.character), tolower)) %>% 
+  mutate(across(where(is.character), tolower),
+         net_species_id = UUIDgenerate(output = c("uuid"), n = n())) %>% 
   rename(survey_id = assmt_code,
          seine_id = seine_code) %>% 
   select(!c(site_code, survey_code, year, date))
 
-#missing survey_ids in clean_net_survey - seems to be no missing survey_ids or sein_ids
+#missing seine_ids  - seems to be no missing survey_ids or sein_ids
 missing_survid_netsur <- net_species_table %>% 
-  filter(!seine_id %in% c(net_species_table$seine_id))
+  filter(!seine_id %in% c(clean_net_survey$seine_id))
+
+net_species_table <- net_species_table %>% 
+  filter(!seine_id %in% c(missing_survid_netsur$seine_id))
 
 
 write_csv(net_species_table, here("clean_tables", "net_species.csv"))
