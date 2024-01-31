@@ -42,7 +42,7 @@ rm(t, z)
 
 ```{r}
 
-clean_site <- Site_Info_piet5 %>% 
+clean_site <- Site_Info_piet6 %>% 
   mutate(across(.cols = c("site_name","property_name"), 
                 .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
          property_area_m2 = as.numeric(if_else(property_area_m2 == "#N/A", NA, property_area_m2)),
@@ -136,7 +136,7 @@ write_csv(clean_water_quality_info, here("clean_tables", "water_quality_info.csv
 
 ```{r}
 
-clean_amphib_dissect <- Amphib_Dissect_piet10 %>% 
+clean_amphib_dissect <- Amphib_Dissect_piet11 %>% 
   rename(survey_id = collect_code,
          dissect_id = dissect_code,
          bd_id = bdid) %>% 
@@ -160,7 +160,7 @@ write_csv(clean_amphib_dissect, here("clean_tables", "amphib_dissect.csv"))
 
 ```{r}
 
-clean_amphib_parasite <- Amphib_Parasite_piet17 %>% 
+clean_amphib_parasite <- Amphib_Parasite_piet18 %>% 
   select(!c(x1)) %>% 
   rename(dissect_id = dissect_code) %>% 
   mutate(parasite_id = UUIDgenerate(output = c("uuid"), n = n()),
@@ -183,7 +183,7 @@ write_csv(clean_amphib_parasite, here("clean_tables", "amphib_parasite.csv"))
 
 ```{r}
 
-clean_bd <- Bd2020_2021v1 %>% 
+clean_bd <-Amphib_Bd_pietv10 %>% 
   select(!c(x, dissection_code, collect_code, index_collect, index_dissect,
             date, species, life_stage, site, index_bd)) %>% 
   rename(bd_id = briggs_lab_swab_id) %>% 
@@ -237,7 +237,7 @@ write_csv(clean_net_survey, here("clean_tables", "net_info.csv"))
 
 ```{r}
 
-net_species_table <- SURVEY_SPP_semiclean_TSM_v2 %>%  
+net_species_table <- SURVEY_SPP_piet4 %>%  
   mutate(across(where(is.character), tolower),
          net_species_id = UUIDgenerate(output = c("uuid"), n = n())) %>% 
   rename(survey_id = assmt_code,
