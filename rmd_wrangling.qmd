@@ -237,7 +237,7 @@ write_csv(clean_net_survey, here("clean_tables", "net_info.csv"))
 
 ```{r}
 
-net_species_table <- SURVEY_SPP_semiclean_TSM_v2 %>% 
+net_species_table <- SURVEY_SPP_semiclean_TSM_v2 %>%  
   mutate(across(where(is.character), tolower),
          net_species_id = UUIDgenerate(output = c("uuid"), n = n())) %>% 
   rename(survey_id = assmt_code,
