@@ -208,7 +208,7 @@ write_csv(clean_bd, here("clean_tables", "bd_results.csv"))
 
 ```{r}
 
-clean_net_survey <- NETTING_INFO_semiclean_TSM_v2 %>% 
+clean_net_survey <- NETTING_INFO_piet5 %>% 
   mutate(across(c("corrections":"general_comments"), ~ str_replace_all(.,"[[:punct:]]", "")),
          across(where(is.character), tolower)) %>% 
   rename(site_id = site_code,
