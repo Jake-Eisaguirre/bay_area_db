@@ -100,8 +100,8 @@ write_csv(clean_wetland_info, here("clean_tables", "wetland_info.csv"))
 
 ```{r}
 
-clean_water_quality_info <- Water_Quality_piet3 %>% 
-  select(!c(x1, site_year)) %>% 
+clean_water_quality_info <- Water_Quality_piet5 %>% 
+  select(!c(site_year)) %>% 
   unite(date, c("year", "month", "day"), sep = "-", na.rm = T) %>% 
   mutate(date = parse_date(date)) %>% 
   mutate(water_color = str_to_lower(water_color),
