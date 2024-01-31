@@ -88,8 +88,8 @@ missing_sites <- clean_wetland_info %>%
   
 write_csv(missing_sites, here("orphan_ids", "orphan_wetlandtable_siteIDS.csv"))
 
-clean_wetland_info <- clean_wetland_info %>% 
-  filter(!site_id %in% c(missing_sites$site_id)) # remove site_ids that are in the wetland table but not in the site table
+# clean_wetland_info <- clean_wetland_info %>% 
+#   filter(!site_id %in% c(missing_sites$site_id)) # remove site_ids that are in the wetland table but not in the site table
 
 
 
