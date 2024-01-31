@@ -66,7 +66,7 @@ write_csv(clean_site, here("clean_tables", "site.csv"))
 
 ```{r}
 
-clean_wetland_info <- Wetland_Info_piet9 %>% 
+clean_wetland_info <- Wetland_Info_piet9 %>%  
   mutate(across(.col = c("trophic_state", "land_usage", "tree_method", "m_or_f"),
                 .fn = ~str_to_lower(str_replace_all(., " ", "_"))),
          across(where(is.character), tolower)) %>% 
