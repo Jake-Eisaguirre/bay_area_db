@@ -145,7 +145,7 @@ clean_amphib_dissect <- Amphib_Dissect_piet10 %>%
 
 #missing survey_ids in amphib dissect table not found in wetland table
 mis_id <- clean_amphib_dissect %>% 
-  filter(!survey_id %in% c(clean_wetland_info$survey_id))
+  filter(!survey_id %in% c(clean_wetland_info$survey_id)) 
 
 write_csv(mis_id, here("orphan_ids", "orphan_AmphibDissect_surveyIDS.csv"))
 
