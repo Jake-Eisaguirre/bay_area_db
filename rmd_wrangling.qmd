@@ -79,7 +79,7 @@ clean_wetland_info <- Wetland_Info_piet9 %>%
   group_by(survey_id) %>% # remove duplicate survey IDs for nnow
   mutate(temp_id = cur_group_id()) %>% 
   filter(!duplicated(temp_id)) %>%
-  select(!c(temp_id)) 
+  select(!c(temp_id))  
 
 
 # Site_IDs present in wetland table but missing in the Site table
