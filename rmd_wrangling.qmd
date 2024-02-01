@@ -156,6 +156,28 @@ clean_amphib_dissect <- clean_amphib_dissect %>%
 write_csv(clean_amphib_dissect, here("clean_tables", "amphib_dissect.csv"))
 ```
 
+
+## malformation transect
+```{r}
+
+clean_malform_transect <- Malform_Transect_piet10 %>% 
+  rename(survey_id = assmt_code) %>% 
+  mutate(across(where(is.character), tolower))
+  
+
+
+```
+
+## transect spp sum
+```{r}
+
+clean_tran_malform_spp <- Transect_SppSum_piet7 %>% 
+  mutate(across(where(is.character), tolower))
+
+```
+
+
+
 ## amphib_parasite
 
 ```{r}
