@@ -59,7 +59,7 @@ clean_site <- Site_Info_piet6 %>%
 
 
 
-write_csv(clean_site, here("clean_tables", "site.csv"))
+write_csv(clean_site, here("clean_tables", "site.csv")) 
 ```
 
 ## wetland info
