@@ -141,7 +141,8 @@ clean_amphib_dissect <- Amphib_Dissect_piet11 %>%
          dissect_id = dissect_code,
          bd_id = bdid) %>% 
   select(!c(site_code, sitecode)) %>% 
-  mutate(across(where(is.character), tolower))
+  mutate(across(where(is.character), tolower),
+         correct_survey_id = "")
 
 #missing survey_ids in amphib dissect table not found in wetland table
 mis_id <- clean_amphib_dissect %>% 
