@@ -117,7 +117,7 @@ missing_water_ids <- clean_water_quality_info %>%
 missing_wat_ids_wet <- clean_wetland_info %>% 
   filter(!water_id %in% clean_water_quality_info$water_id)
 
-write_csv(missing_water_ids, here("orphan_ids", "orphan_watertable_waterIDS.csv"))
+write_csv(missing_water_ids, here("orphan_ids", "orphan_watertable_waterIDS.csv")) 
 
 # remove ophan ids
 clean_water_quality_info <- clean_water_quality_info %>% 
