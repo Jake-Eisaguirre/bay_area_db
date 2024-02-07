@@ -142,8 +142,7 @@ clean_amphib_dissect <- Amphib_Dissect_piet11 %>%
          dissect_id = dissect_code,
          bd_id = bdid) %>% 
   select(!c(site_code, sitecode)) %>% 
-  mutate(across(where(is.character), tolower),
-         correct_survey_id = "")
+  mutate(across(where(is.character), tolower))
 
 #missing survey_ids in amphib dissect table not found in wetland table
 mis_id <- clean_amphib_dissect %>% 
@@ -188,7 +187,8 @@ clean_amphib_parasite <- Amphib_Parasite_piet18 %>%
   #select(!c(x1)) %>% 
   rename(dissect_id = dissect_code) %>% 
   mutate(parasite_id = UUIDgenerate(output = c("uuid"), n = n()),
-         across(where(is.character), tolower))
+         across(where(is.character), tolower),
+         correct_dissect_id = "")
 
 # missing dissect IDs
 mis_dis_id <- clean_amphib_parasite %>% 
