@@ -200,7 +200,7 @@ write_csv(mis_dis_id, here("orphan_ids", "orphan_ParasiteDissect_dissectIDS.csv"
 clean_amphib_parasite <- clean_amphib_parasite %>% 
   filter(!dissect_id %in% c(mis_dis_id$dissect_id))
   
-write_csv(clean_amphib_parasite, here("clean_tables", "amphib_parasite.csv"))
+write_csv(clean_amphib_parasite, here("clean_tables", "amphib_parasite.csv")) 
 ```
 
 ## Bd table
