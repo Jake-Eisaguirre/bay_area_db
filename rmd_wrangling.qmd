@@ -241,8 +241,11 @@ clean_net_survey <- NETTING_INFO_piet5 %>%
   select(!c(survey_code, year, date))
 
 # missing site_ids in the net survey info
-missing_siteid_netsurv <- clean_net_survey %>% 
-  filter(!site_id %in% c(clean_site$site_id))
+missing_survid_netsurv <- clean_net_survey %>% 
+  filter(!survey_id %in% c(clean_wetland_info$survey_id)) %>% 
+  mutate(correct_survey_id = "")
+
+write_csv(missing_survid_netsurv, here("orphan_ids", "orphan_nettinginfo_surveyid.csv"))
 
 #duplicated seine_id - P.key
 dup_seine_id <- clean_net_survey %>% 
@@ -269,7 +272,7 @@ net_species_table <- SURVEY_SPP_piet4 %>%
   select(!c(site_code, survey_code, year, date))
 
 #missing seine_ids  - seems to be no missing survey_ids or sein_ids
-missing_survid_netsur <- net_species_table %>% 
+missing_seineid_netsur <- net_species_table %>% 
   filter(!seine_id %in% c(clean_net_survey$seine_id))
 
 net_species_table <- net_species_table %>% 
