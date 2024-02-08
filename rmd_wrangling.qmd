@@ -273,7 +273,7 @@ missing_survid_netsur <- net_species_table %>%
   filter(!seine_id %in% c(clean_net_survey$seine_id))
 
 net_species_table <- net_species_table %>% 
-  filter(!seine_id %in% c(missing_survid_netsur$seine_id))
+  filter(!seine_id %in% c(missing_survid_netsur$seine_id)) 
 
 
 write_csv(net_species_table, here("clean_tables", "net_species.csv"))
