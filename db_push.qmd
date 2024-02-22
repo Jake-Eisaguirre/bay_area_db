@@ -58,6 +58,7 @@ tryCatch({
             print("Unable to connect to Database.")
     })
 
+
 ```
 
 ## Push all clean tables to database
